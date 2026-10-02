@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import {
+  Search,
+  Filter,
+  RefreshCw,
+  MapPin,
+  Building,
+  Clock,
+  Send,
+  X,
+  Briefcase,
+  CheckCircle,
+  AlertCircle
+} from 'lucide-react';
 
 export default function JobsPage() {
   const { user } = useAuth();
@@ -10,7 +23,7 @@ export default function JobsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('All');
 
-  // Modal state for viewing details & applying
+  // Modal state
   const [selectedJob, setSelectedJob] = useState(null);
   const [coverNote, setCoverNote] = useState('');
   const [applying, setApplying] = useState(false);
@@ -24,7 +37,7 @@ export default function JobsPage() {
       const data = await api.getJobs('Open');
       setJobs(Array.isArray(data) ? data : []);
     } catch (err) {
-      setError(err.message || 'Failed to load open jobs from server.');
+      setError(err.message || 'Failed to load open positions.');
     } finally {
       setLoading(false);
     }
@@ -49,7 +62,7 @@ export default function JobsPage() {
 
     try {
       await api.apply(selectedJob.id, coverNote);
-      setApplySuccess('Your application has been submitted successfully!');
+      setApplySuccess('Your application has been successfully submitted to HR!');
       setTimeout(() => {
         setSelectedJob(null);
         fetchJobs();
@@ -74,67 +87,117 @@ export default function JobsPage() {
 
   return (
     <div className="container">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}>
         <div>
-          <h1 className="page-title">Open Internal Positions</h1>
+          <h1 className="page-title">Internal Career Opportunities</h1>
           <p className="page-subtitle">
-            Explore career opportunities within the company and apply directly.
+            Explore open requisitions across departments and apply using your employee profile.
           </p>
         </div>
       </div>
 
-      {error && <div className="alert alert-error">{error}</div>}
+      {error && (
+        <div className="alert alert-error">
+          <AlertCircle size={16} />
+          <span>{error}</span>
+        </div>
+      )}
 
+      {/* Toolbar / Search filters */}
       <div className="toolbar">
-        <input
-          type="text"
-          placeholder="Search by job title or keyword..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <select
-          value={departmentFilter}
-          onChange={(e) => setDepartmentFilter(e.target.value)}
-        >
-          {departments.map((d) => (
-            <option key={d} value={d}>
-              {d === 'All' ? 'All Departments' : d}
-            </option>
-          ))}
-        </select>
-        <button className="btn btn-secondary btn-sm" onClick={fetchJobs}>
-          Refresh
+        <div style={{ position: 'relative', flex: 1, minWidth: 260 }}>
+          <input
+            type="text"
+            className="form-control"
+            style={{ paddingLeft: 36 }}
+            placeholder="Search roles by title, keyword, or skills..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <Search
+            size={16}
+            style={{
+              position: 'absolute',
+              left: 12,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: 'var(--text-light)',
+            }}
+          />
+        </div>
+
+        <div style={{ position: 'relative' }}>
+          <select
+            className="form-control"
+            style={{ paddingLeft: 34, minWidth: 180 }}
+            value={departmentFilter}
+            onChange={(e) => setDepartmentFilter(e.target.value)}
+          >
+            {departments.map((d) => (
+              <option key={d} value={d}>
+                {d === 'All' ? 'All Departments' : d}
+              </option>
+            ))}
+          </select>
+          <Filter
+            size={15}
+            style={{
+              position: 'absolute',
+              left: 11,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: 'var(--text-light)',
+            }}
+          />
+        </div>
+
+        <button className="btn btn-secondary btn-sm" onClick={fetchJobs} title="Refresh jobs">
+          <RefreshCw size={14} />
+          <span>Refresh</span>
         </button>
       </div>
 
       {loading ? (
-        <div className="loading">Loading positions...</div>
+        <div className="loading card">Fetching available positions from server...</div>
       ) : filteredJobs.length === 0 ? (
         <div className="empty card">
-          <p>No open positions match your criteria at this moment.</p>
+          <Briefcase className="empty-icon" />
+          <h3 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-main)' }}>
+            No Positions Found
+          </h3>
+          <p>We couldn't find any positions matching your search or filters.</p>
         </div>
       ) : (
         <div className="job-list">
           {filteredJobs.map((job) => (
             <div key={job.id} className="job-item">
               <div className="job-item-info">
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
                   <span className="job-item-title">{job.title}</span>
-                  <span className="badge badge-open">Open</span>
+                  <span className="badge badge-open">Active Opening</span>
                 </div>
+
                 <div className="job-item-meta">
-                  <span><strong>Dept:</strong> {job.department}</span>
-                  <span>•</span>
-                  <span><strong>Location:</strong> {job.location || 'Not specified'}</span>
-                  <span>•</span>
-                  <span><strong>Type:</strong> {job.workType || 'Full-time'}</span>
+                  <span className="meta-chip">
+                    <Building size={13} />
+                    {job.department}
+                  </span>
+                  <span className="meta-chip">
+                    <MapPin size={13} />
+                    {job.location || 'HQ'}
+                  </span>
+                  <span className="meta-chip">
+                    <Clock size={13} />
+                    {job.workType || 'Hybrid'}
+                  </span>
                 </div>
+
                 <p
                   className="desc-text"
                   style={{
-                    marginTop: 10,
+                    marginTop: 12,
                     display: '-webkit-box',
-                    WebkitLineClamp: 3,
+                    WebkitLineClamp: 2,
                     WebkitBoxOrient: 'vertical',
                     overflow: 'hidden',
                   }}
@@ -148,7 +211,8 @@ export default function JobsPage() {
                   className="btn btn-primary"
                   onClick={() => openApplyModal(job)}
                 >
-                  View & Apply
+                  <span>Apply Now</span>
+                  <Send size={14} />
                 </button>
               </div>
             </div>
@@ -156,63 +220,86 @@ export default function JobsPage() {
         </div>
       )}
 
-      {/* View & Apply Modal */}
+      {/* Modern View & Apply Modal */}
       {selectedJob && (
         <div className="modal-overlay" onClick={() => setSelectedJob(null)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>{selectedJob.title}</h2>
+              <div>
+                <h2>{selectedJob.title}</h2>
+                <div className="job-item-meta" style={{ marginTop: 4 }}>
+                  <span className="meta-chip">
+                    <Building size={12} />
+                    {selectedJob.department}
+                  </span>
+                  <span className="meta-chip">
+                    <MapPin size={12} />
+                    {selectedJob.location}
+                  </span>
+                  <span className="meta-chip">
+                    <Clock size={12} />
+                    {selectedJob.workType}
+                  </span>
+                </div>
+              </div>
               <button
                 className="modal-close"
                 onClick={() => setSelectedJob(null)}
               >
-                ×
+                <X size={20} />
               </button>
             </div>
 
             <div className="modal-body">
-              <div style={{ marginBottom: 16 }}>
-                <span className="badge badge-open">Open</span>
-                <div className="job-item-meta" style={{ marginTop: 8 }}>
-                  <span><strong>Department:</strong> {selectedJob.department}</span>
-                  <span>•</span>
-                  <span><strong>Location:</strong> {selectedJob.location}</span>
-                  <span>•</span>
-                  <span><strong>Type:</strong> {selectedJob.workType}</span>
-                </div>
-              </div>
-
               <div style={{ marginBottom: 20 }}>
-                <label style={{ fontWeight: 600, display: 'block', marginBottom: 6 }}>
-                  Job Description
+                <label style={{ fontWeight: 600, display: 'block', marginBottom: 8, fontSize: 13 }}>
+                  Role Overview & Requirements
                 </label>
-                <div className="desc-text card" style={{ background: '#f9fafb' }}>
+                <div className="desc-text card" style={{ background: 'var(--bg-main)', borderStyle: 'dashed' }}>
                   {selectedJob.description}
                 </div>
               </div>
 
-              <div className="card" style={{ background: '#f0fdf4', borderColor: '#bbf7d0', marginBottom: 16 }}>
-                <p style={{ fontSize: 13, color: '#166534', fontWeight: 600, marginBottom: 4 }}>
-                  Applying as:
+              <div
+                className="card"
+                style={{
+                  background: 'var(--success-light)',
+                  borderColor: 'var(--success-border)',
+                  marginBottom: 20,
+                  padding: 16,
+                }}
+              >
+                <p style={{ fontSize: 13, color: '#166534', fontWeight: 600, marginBottom: 2 }}>
+                  Submitting Application As:
                 </p>
-                <p style={{ fontSize: 12, color: '#166534' }}>
-                  {user?.name} ({user?.email}) · ID: {user?.employeeId} · Dept: {user?.department}
+                <p style={{ fontSize: 12.5, color: '#166534' }}>
+                  {user?.name} · {user?.email} (ID: {user?.employeeId} · {user?.department})
                 </p>
               </div>
 
-              {applySuccess && <div className="alert alert-success">{applySuccess}</div>}
-              {applyError && <div className="alert alert-error">{applyError}</div>}
+              {applySuccess && (
+                <div className="alert alert-success">
+                  <CheckCircle size={16} />
+                  <span>{applySuccess}</span>
+                </div>
+              )}
+              {applyError && (
+                <div className="alert alert-error">
+                  <AlertCircle size={16} />
+                  <span>{applyError}</span>
+                </div>
+              )}
 
               <form onSubmit={handleApply}>
                 <div className="form-group">
                   <label htmlFor="cover-note">
-                    Cover Note / Internal Transfer Statement (optional)
+                    Internal Transfer Statement / Notes to Hiring Manager
                   </label>
                   <textarea
                     id="cover-note"
                     className="form-control"
                     rows={4}
-                    placeholder="Briefly describe why you are interested in this position and relevant experience..."
+                    placeholder="Briefly highlight your current projects, skills, or why you want to move into this role..."
                     value={coverNote}
                     onChange={(e) => setCoverNote(e.target.value)}
                   />
@@ -231,7 +318,8 @@ export default function JobsPage() {
                     className="btn btn-primary"
                     disabled={applying}
                   >
-                    {applying ? 'Submitting...' : 'Submit Application'}
+                    <Send size={14} />
+                    <span>{applying ? 'Submitting Application...' : 'Confirm & Apply'}</span>
                   </button>
                 </div>
               </form>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { Briefcase, ArrowRight, ShieldCheck, Mail, Lock } from 'lucide-react';
 
 export default function LoginPage({ onSwitchToRegister }) {
   const { login } = useAuth();
@@ -30,65 +31,102 @@ export default function LoginPage({ onSwitchToRegister }) {
   return (
     <div className="auth-wrapper">
       <div className="auth-box">
-        <h1>Internal Job Portal</h1>
-        <p className="auth-subtitle">Sign in to your account</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+          <div className="brand-icon-box" style={{ width: 40, height: 40 }}>
+            <Briefcase size={22} strokeWidth={2.4} />
+          </div>
+          <div>
+            <h1>Internal Career Portal</h1>
+            <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>Organization Talent Mobility</p>
+          </div>
+        </div>
+
+        <p className="auth-subtitle">Sign in with your enterprise credentials</p>
 
         {error && <div className="alert alert-error">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="login-email">Email Address</label>
-            <input
-              id="login-email"
-              type="email"
-              className="form-control"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. employee@company.com"
-              required
-            />
+            <label htmlFor="login-email">Work Email</label>
+            <div style={{ position: 'relative' }}>
+              <input
+                id="login-email"
+                type="email"
+                className="form-control"
+                style={{ paddingLeft: 34 }}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="employee@company.com"
+                required
+              />
+              <Mail
+                size={16}
+                style={{
+                  position: 'absolute',
+                  left: 11,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: 'var(--text-light)',
+                }}
+              />
+            </div>
           </div>
 
           <div className="form-group">
             <label htmlFor="login-password">Password</label>
-            <input
-              id="login-password"
-              type="password"
-              className="form-control"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                id="login-password"
+                type="password"
+                className="form-control"
+                style={{ paddingLeft: 34 }}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+              />
+              <Lock
+                size={16}
+                style={{
+                  position: 'absolute',
+                  left: 11,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: 'var(--text-light)',
+                }}
+              />
+            </div>
           </div>
 
-          <div style={{ marginTop: 20 }}>
+          <div style={{ marginTop: 24 }}>
             <button
               type="submit"
               className="btn btn-primary"
-              style={{ width: '100%', justifyContent: 'center' }}
+              style={{ width: '100%' }}
               disabled={loading}
             >
-              {loading ? 'Signing in...' : 'Sign In'}
+              <span>{loading ? 'Authenticating...' : 'Sign In'}</span>
+              <ArrowRight size={16} />
             </button>
           </div>
         </form>
 
-        <div style={{ marginTop: 14, textAlign: 'center' }}>
+        <div style={{ marginTop: 14 }}>
           <button
             type="button"
             className="btn btn-secondary btn-sm"
             onClick={fillAdmin}
-            style={{ width: '100%', justifyContent: 'center' }}
+            style={{ width: '100%', padding: '8px 12px' }}
           >
-            Auto-fill Admin Credentials
+            <ShieldCheck size={14} color="var(--primary)" />
+            <span>Auto-fill Admin Credentials</span>
           </button>
         </div>
 
         <div className="auth-footer">
-          Don't have an account?{' '}
+          New employee?{' '}
           <button type="button" onClick={onSwitchToRegister}>
-            Register here
+            Create your account
           </button>
         </div>
       </div>

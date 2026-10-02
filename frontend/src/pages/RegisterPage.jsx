@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { UserPlus, ArrowRight, User, Mail, Hash, Building2, Lock } from 'lucide-react';
 
 const DEPARTMENTS = [
   'Engineering',
@@ -48,105 +49,180 @@ export default function RegisterPage({ onSwitchToLogin }) {
 
   return (
     <div className="auth-wrapper">
-      <div className="auth-box">
-        <h1>Create Account</h1>
-        <p className="auth-subtitle">Register using your employee details</p>
+      <div className="auth-box" style={{ maxWidth: 480 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+          <div className="brand-icon-box" style={{ width: 40, height: 40, background: 'linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%)' }}>
+            <UserPlus size={20} strokeWidth={2.4} />
+          </div>
+          <div>
+            <h1>Create Employee Account</h1>
+            <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>Self-register for internal job transfers</p>
+          </div>
+        </div>
+
+        <p className="auth-subtitle">Fill in your official organization credentials</p>
 
         {error && <div className="alert alert-error">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="reg-name">Full Name</label>
-            <input
-              id="reg-name"
-              type="text"
-              name="name"
-              className="form-control"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="e.g. Jane Doe"
-              required
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                id="reg-name"
+                type="text"
+                name="name"
+                className="form-control"
+                style={{ paddingLeft: 34 }}
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Jane Doe"
+                required
+              />
+              <User
+                size={16}
+                style={{
+                  position: 'absolute',
+                  left: 11,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: 'var(--text-light)',
+                }}
+              />
+            </div>
           </div>
 
           <div className="form-group">
             <label htmlFor="reg-email">Work Email</label>
-            <input
-              id="reg-email"
-              type="email"
-              name="email"
-              className="form-control"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="jane.doe@company.com"
-              required
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                id="reg-email"
+                type="email"
+                name="email"
+                className="form-control"
+                style={{ paddingLeft: 34 }}
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="jane.doe@company.com"
+                required
+              />
+              <Mail
+                size={16}
+                style={{
+                  position: 'absolute',
+                  left: 11,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: 'var(--text-light)',
+                }}
+              />
+            </div>
           </div>
 
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="reg-empid">Employee ID</label>
-              <input
-                id="reg-empid"
-                type="text"
-                name="employeeId"
-                className="form-control"
-                value={formData.employeeId}
-                onChange={handleChange}
-                placeholder="EMP-1042"
-                required
-              />
+              <div style={{ position: 'relative' }}>
+                <input
+                  id="reg-empid"
+                  type="text"
+                  name="employeeId"
+                  className="form-control"
+                  style={{ paddingLeft: 34 }}
+                  value={formData.employeeId}
+                  onChange={handleChange}
+                  placeholder="EMP-1042"
+                  required
+                />
+                <Hash
+                  size={16}
+                  style={{
+                    position: 'absolute',
+                    left: 11,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    color: 'var(--text-light)',
+                  }}
+                />
+              </div>
             </div>
 
             <div className="form-group">
               <label htmlFor="reg-dept">Department</label>
-              <select
-                id="reg-dept"
-                name="department"
-                className="form-control"
-                value={formData.department}
-                onChange={handleChange}
-              >
-                {DEPARTMENTS.map((d) => (
-                  <option key={d} value={d}>
-                    {d}
-                  </option>
-                ))}
-              </select>
+              <div style={{ position: 'relative' }}>
+                <select
+                  id="reg-dept"
+                  name="department"
+                  className="form-control"
+                  style={{ paddingLeft: 34 }}
+                  value={formData.department}
+                  onChange={handleChange}
+                >
+                  {DEPARTMENTS.map((d) => (
+                    <option key={d} value={d}>
+                      {d}
+                    </option>
+                  ))}
+                </select>
+                <Building2
+                  size={16}
+                  style={{
+                    position: 'absolute',
+                    left: 11,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    color: 'var(--text-light)',
+                  }}
+                />
+              </div>
             </div>
           </div>
 
           <div className="form-group">
             <label htmlFor="reg-password">Password</label>
-            <input
-              id="reg-password"
-              type="password"
-              name="password"
-              className="form-control"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="At least 6 characters"
-              required
-              minLength={6}
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                id="reg-password"
+                type="password"
+                name="password"
+                className="form-control"
+                style={{ paddingLeft: 34 }}
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="At least 6 characters"
+                required
+                minLength={6}
+              />
+              <Lock
+                size={16}
+                style={{
+                  position: 'absolute',
+                  left: 11,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: 'var(--text-light)',
+                }}
+              />
+            </div>
           </div>
 
-          <div style={{ marginTop: 20 }}>
+          <div style={{ marginTop: 24 }}>
             <button
               type="submit"
               className="btn btn-primary"
-              style={{ width: '100%', justifyContent: 'center' }}
+              style={{ width: '100%' }}
               disabled={loading}
             >
-              {loading ? 'Registering...' : 'Register as Employee'}
+              <span>{loading ? 'Creating Account...' : 'Complete Registration'}</span>
+              <ArrowRight size={16} />
             </button>
           </div>
         </form>
 
         <div className="auth-footer">
-          Already have an account?{' '}
+          Already registered?{' '}
           <button type="button" onClick={onSwitchToLogin}>
-            Sign in
+            Sign in here
           </button>
         </div>
       </div>
